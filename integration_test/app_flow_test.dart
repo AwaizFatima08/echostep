@@ -36,11 +36,34 @@ Future<void> waitFor(WidgetTester tester, Finder f, {double seconds = 45}) async
   expect(f, findsWidgets);
 }
 
+/// Pumps until [f] finds nothing.
+Future<void> waitGone(WidgetTester tester, Finder f, {double seconds = 20}) async {
+  final end = DateTime.now().add(Duration(milliseconds: (seconds * 1000).round()));
+  while (f.evaluate().isNotEmpty && DateTime.now().isBefore(end)) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+  expect(f, findsNothing);
+}
+
 Future<void> tapIn(WidgetTester tester, Finder f) async {
   await waitFor(tester, f);
   await tester.ensureVisible(f);
   await tester.pump();
   await tester.tap(f);
+}
+
+/// Taps the top-most Back until [target] shows. On a slow emulator a tap can
+/// land on a screen that is still fading out.
+Future<void> backUntil(WidgetTester tester, Finder target) async {
+  for (var i = 0; i < 4 && target.evaluate().isEmpty; i++) {
+    final back = find.bySemanticsLabel('Back');
+    if (back.evaluate().isNotEmpty) await tester.tap(back.last, warnIfMissed: false);
+    final end = DateTime.now().add(const Duration(seconds: 8));
+    while (target.evaluate().isEmpty && DateTime.now().isBefore(end)) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+  }
+  expect(target, findsWidgets);
 }
 
 void main() {
@@ -51,17 +74,19 @@ void main() {
     final dir = Directory('${docs.path}/it_${DateTime.now().millisecondsSinceEpoch}')..createSync();
     final store = await Store.open(dir);
     final speech = Speech(); // real TTS: prompts play, and the mic is muted meanwhile
-    await tester.pumpWidget(EchoStepsApp(
-      store: store,
-      sound: SoundPlayer(),
-      speech: speech,
-      voice: VoiceEngine(
-        appSpeaking: speech.speaking,
-        inputFactory: (id) => SynthInput(script: id == null ? null : SynthInput.targetScript(id)),
+    await tester.pumpWidget(
+      EchoStepsApp(
+        store: store,
+        sound: SoundPlayer(),
+        speech: speech,
+        voice: VoiceEngine(
+          appSpeaking: speech.speaking,
+          inputFactory: (id) => SynthInput(script: id == null ? null : SynthInput.targetScript(id)),
+        ),
+        session: SessionTracker(store),
+        cloud: CloudSync(store: store),
       ),
-      session: SessionTracker(store),
-      cloud: CloudSync(store: store),
-    ));
+    );
     await run(tester, 3);
 
     // Setup.
@@ -81,7 +106,7 @@ void main() {
     // Sound Spark.
     await tapIn(tester, find.byKey(const ValueKey('hub-spark')));
     await run(tester, 15);
-    await tapIn(tester, find.bySemanticsLabel('Back').first);
+    await backUntil(tester, find.byKey(const ValueKey('hub-safari')));
     await run(tester, 2);
 
     // Echo Safari: "ah" then "Next sound" to "mmm".
@@ -91,19 +116,23 @@ void main() {
     await waitFor(tester, find.text('New card!'), seconds: 90);
     await run(tester, 2);
     await tapIn(tester, find.byKey(const ValueKey('stop-next')));
+    // The first stop's reward fades out before the "Mmm" stop takes over.
+    await waitGone(tester, find.text('New card!'));
     await waitFor(tester, find.text('New card!'), seconds: 90);
-    await tapIn(tester, find.bySemanticsLabel('Back').first);
+    expect(find.text('milk'), findsOneWidget);
+    await backUntil(tester, find.byKey(const ValueKey('stop-ah'))); // the map
     await run(tester, 2);
-    await tapIn(tester, find.bySemanticsLabel('Back').first);
+    await backUntil(tester, find.byKey(const ValueKey('hub-cards')));
     await run(tester, 2);
 
     // Card wall.
     await tapIn(tester, find.byKey(const ValueKey('hub-cards')));
-    await run(tester, 2);
-    expect(find.text('milk'), findsWidgets); // unlocked by "mmm"
-    await tapIn(tester, find.byKey(const ValueKey('card-milk')));
+    await waitFor(tester, find.byKey(const ValueKey('card-more')));
+    // "milk" (unlocked by "mmm") is further down the grid.
+    await tester.dragUntilVisible(find.byKey(const ValueKey('card-milk')), find.byType(GridView), const Offset(0, -300));
+    await tester.tap(find.byKey(const ValueKey('card-milk')));
     await run(tester, 6);
-    await tapIn(tester, find.bySemanticsLabel('Back').first);
+    await backUntil(tester, find.byKey(const ValueKey('parent-lock')));
     await run(tester, 2);
 
     // Parent Zone.

@@ -102,8 +102,8 @@ class GrowthTreePainter extends CustomPainter {
     );
 
     // Trunk.
-    final trunkH = h * (0.12 + 0.3 * stats.growth);
-    final trunkW = w * (0.025 + 0.035 * stats.growth);
+    final trunkH = h * (0.1 + 0.2 * stats.growth);
+    final trunkW = w * (0.022 + 0.03 * stats.growth);
     final top = Offset(w / 2, ground - trunkH);
     canvas.drawPath(
       Path()
@@ -115,33 +115,44 @@ class GrowthTreePainter extends CustomPainter {
       Paint()..color = _bark,
     );
 
-    // Branches.
+    // Branches fork right at the trunk top. Their length is sized so the
+    // whole canopy fits the space above, however deep it gets.
     final tips = <Offset>[];
     final branchPaint = Paint()
       ..color = _barkLight
       ..strokeCap = StrokeCap.round;
+    const shrink = 0.72;
     void branch(Offset from, double angle, double len, double width, int depth) {
-      if (depth == 0) {
-        tips.add(from);
-        return;
-      }
       final to = from + Offset(math.sin(angle), -math.cos(angle)) * len;
       branchPaint.strokeWidth = width;
       canvas.drawLine(from, to, branchPaint);
-      final spread = 0.42 + rand.nextDouble() * 0.2;
-      branch(to, angle - spread, len * 0.74, width * 0.7, depth - 1);
-      branch(to, angle + spread, len * 0.74, width * 0.7, depth - 1);
+      if (depth <= 1) {
+        tips.add(to);
+        return;
+      }
+      final spread = 0.38 + rand.nextDouble() * 0.18;
+      branch(to, angle - spread, len * shrink, width * 0.7, depth - 1);
+      branch(to, angle + spread, len * shrink, width * 0.7, depth - 1);
     }
 
     final depth = stats.depth;
     if (depth == 0) {
       tips.add(top);
     } else {
-      branch(top, 0, h * (0.08 + 0.07 * stats.growth), trunkW * 1.1, depth);
+      var reach = 0.0;
+      for (var k = 0; k < depth; k++) {
+        reach += math.pow(shrink, k) * 0.85; // branches lean, so less than full height
+      }
+      final len = math.min((top.dy - h * 0.17) / reach, h * 0.2);
+      final width = trunkW * 0.9;
+      for (final a in [-0.45, 0.45]) {
+        branch(top, a + (rand.nextDouble() - 0.5) * 0.1, len, width, depth);
+      }
+      if (depth >= 3) branch(top, (rand.nextDouble() - 0.5) * 0.15, len * 0.9, width * 0.9, depth - 1);
     }
 
     // Leaves: clusters at the tips, fuller with more vocalizations.
-    final perTip = (1 + stats.vocalizations / (8 * tips.length)).clamp(1, 5).round();
+    final perTip = (2 + stats.vocalizations / (8 * tips.length)).clamp(2, 6).round();
     for (final tip in tips) {
       for (var k = 0; k < perTip; k++) {
         final a = rand.nextDouble() * math.pi * 2;

@@ -10,18 +10,25 @@
 | Cloud end-to-end on a device | see below | Real Firebase SDKs + rules on the local emulators: guest backup → add email (same UID) → sign out → wrong password refused → restore on a "new device" → delete account; another family can't read |
 | Stress | `adb shell monkey -p com.homilabs.echosteps --pct-syskeys 0 --throttle 120 -v 3000` | Thousands of random taps and swipes, like a toddler mashing the screen |
 
+### Results for v1.0.0 (25 Sep 2026, Android 15 emulator, AVD `echosteps_api35`)
+- `flutter analyze`: no issues. `flutter test`: 79/79 passed. Rules: 8/8 passed.
+- Device suites (`integration_test/all_test.dart`): 3/3 passed (app flow; cloud upgrade/restore/delete; cross-family isolation).
+- Release build, by hand: setup with the microphone denied, touch fallback in Echo Safari, "Next sound" then Back twice, Parent Zone, cloud backup "synced" against production Firebase (so R8 didn't break Firestore).
+- Monkey: 3,000 events on the release build: no crashes, no ANRs.
+- Release APK permissions: `RECORD_AUDIO`, `INTERNET`, `ACCESS_NETWORK_STATE` (plus Play-services internals); the advertising ID is removed.
+
 ### Running the device tests on this machine
 Gradle builds starve the emulator (its hang watchdog kills it), and `pixel6_api35` is shared with other projects. So: use the dedicated AVD, and build before driving.
 
 ```
 # 1. build the test APK (emulator may be off)
-nice -n 19 flutter build apk --debug --target integration_test/app_flow_test.dart
+nice -n 19 flutter build apk --debug --target integration_test/all_test.dart
 # 2. start the dedicated emulator
 ANDROID_AVD_HOME=/mnt/storage/projects/android-avd ~/Android/Sdk/emulator/emulator -avd echosteps_api35 -port 5580 -gpu swangle_indirect -cores 3 -memory 2560 -no-audio &
 # 3. drive it
-flutter drive --driver test_driver/integration_test.dart --target integration_test/app_flow_test.dart --use-application-binary build/app/outputs/flutter-apk/app-debug.apk -d emulator-5580
+flutter drive --driver test_driver/integration_test.dart --target integration_test/all_test.dart --use-application-binary build/app/outputs/flutter-apk/app-debug.apk -d emulator-5580
 ```
-For `cloud_test.dart`, first start `firebase emulators:start --only auth,firestore --project demo-echosteps` (JDK 21) and run `adb -s emulator-5580 reverse tcp:9099 tcp:9099` and `adb -s emulator-5580 reverse tcp:8085 tcp:8085`, then steps 1 and 3 with that target. It never touches the production project.
+For the cloud suite, first start `firebase emulators:start --only auth,firestore --project demo-echosteps` (JDK 21) and run `adb -s emulator-5580 reverse tcp:9099 tcp:9099` and `adb -s emulator-5580 reverse tcp:8085 tcp:8085`, then steps 1 and 3 (all_test.dart runs both suites). It never touches the production project.
 
 To play the app on an emulator without a microphone: `flutter build apk --debug --dart-define=ES_SYNTH_VOICE=true` (a synthetic child hums, babbles and says vowels).
 

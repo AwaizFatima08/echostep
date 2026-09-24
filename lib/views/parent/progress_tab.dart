@@ -65,10 +65,10 @@ class _ProgressTabState extends State<ProgressTab> {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _Fact(Icons.graphic_eq_rounded, '${c.totalVocalizations} vocalizations', 'roots'),
+                  _Fact(Icons.graphic_eq_rounded, _count(c.totalVocalizations, 'vocalization'), 'roots'),
                   _Fact(Icons.timer_rounded, '${todayMin.round()} min today', 'trunk'),
-                  _Fact(Icons.calendar_month_rounded, '${tree.activeDays} active days', 'branches'),
-                  _Fact(Icons.local_florist_rounded, '${tree.practised.length} sounds practised', 'flowers'),
+                  _Fact(Icons.calendar_month_rounded, _count(tree.activeDays, 'active day'), 'branches'),
+                  _Fact(Icons.local_florist_rounded, '${_count(tree.practised.length, 'sound')} practised', 'flowers'),
                   _Fact(Icons.star_rounded, '${tree.mastered.length} mastered', 'stars'),
                 ],
               ),
@@ -403,3 +403,6 @@ class _SoundChip extends StatelessWidget {
     );
   }
 }
+
+/// "1 active day", "3 active days".
+String _count(int n, String noun) => '$n $noun${n == 1 ? '' : 's'}';

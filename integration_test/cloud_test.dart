@@ -19,6 +19,15 @@ import 'package:path_provider/path_provider.dart';
 
 Future<void> settle([int ms = 1500]) => Future<void>.delayed(Duration(milliseconds: ms));
 
+/// Polls [ok] for up to 30 s (a slow emulator talks to the host's Firebase
+/// emulators through adb reverse).
+Future<void> until(bool Function() ok) async {
+  final end = DateTime.now().add(const Duration(seconds: 30));
+  while (!ok() && DateTime.now().isBefore(end)) {
+    await Future<void>.delayed(const Duration(milliseconds: 250));
+  }
+}
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   late FirebaseAuth auth;
@@ -68,6 +77,7 @@ void main() {
     final syncA = CloudSync(store: storeA, auth: auth, db: db);
     await syncA.start();
     final c = storeA.addChild(nickname: 'Leo', ageGroup: '4-5', buddy: Buddy.pip);
+    await until(() => syncA.state.value.mode == CloudMode.guest);
     await settle();
     expect(syncA.state.value.mode, CloudMode.guest);
     final guestUid = auth.currentUser!.uid;
@@ -116,6 +126,7 @@ void main() {
     final syncA = CloudSync(store: storeA, auth: auth, db: db);
     await syncA.start();
     final c = storeA.addChild(nickname: 'Mia', ageGroup: '2-3', buddy: Buddy.milo);
+    await until(() => syncA.state.value.mode == CloudMode.guest);
     await settle();
     final uidA = auth.currentUser!.uid;
     await auth.signOut();
