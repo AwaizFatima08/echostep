@@ -1,0 +1,78 @@
+rules_version = '2';
+
+// EchoSteps: every document lives under the signed-in parent's own UID
+// (anonymous or email). Nobody can read or write anyone else's tree, and
+// every write is shape-checked so a buggy or tampered client can't store
+// arbitrary data about a child. Anything not matched below is denied.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function isStr(v, maxLen) {
+      return v is string && v.size() <= maxLen;
+    }
+
+    function isCount(v) {
+      return v is int && v >= 0 && v < 100000000;
+    }
+
+    function isNum(v) {
+      return (v is int || v is float) && v >= -1000 && v < 100000000;
+    }
+
+    match /users/{uid} {
+      allow read, delete: if signedIn(uid);
+      allow create, update: if signedIn(uid)
+        && request.resource.data.keys().hasOnly(['created_at', 'updated_at', 'schema'])
+        && request.resource.data.schema is int;
+
+      match /children/{childId} {
+        allow read, delete: if signedIn(uid);
+        allow create, update: if signedIn(uid) && validChild(request.resource.data);
+
+        function validChild(d) {
+          return d.keys().hasOnly(['nickname', 'age_group', 'avatar_id', 'created_at', 'updated_at',
+                                   'stats', 'practised_sounds', 'mastered_sounds', 'unlocked_cards',
+                                   'settings', 'calibration'])
+            && d.keys().hasAll(['nickname', 'age_group', 'avatar_id'])
+            && isStr(d.nickname, 24)
+            && d.age_group in ['2-3', '4-5', '6+']
+            && isStr(d.avatar_id, 24)
+            && (!('stats' in d) || (d.stats is map && d.stats.size() <= 12))
+            && (!('practised_sounds' in d) || (d.practised_sounds is map && d.practised_sounds.size() <= 32))
+            && (!('mastered_sounds' in d) || (d.mastered_sounds is list && d.mastered_sounds.size() <= 32))
+            && (!('unlocked_cards' in d) || (d.unlocked_cards is list && d.unlocked_cards.size() <= 200))
+            && (!('settings' in d) || (d.settings is map && d.settings.size() <= 24))
+            && (!('calibration' in d) || (d.calibration is map && d.calibration.size() <= 8));
+        }
+
+        match /sessions/{sessionId} {
+          allow read, delete: if signedIn(uid);
+          // Sessions are an append-only log; an identical re-send (offline
+          // retry) is allowed as an update.
+          allow create, update: if signedIn(uid) && validSession(request.resource.data);
+
+          function validSession(d) {
+            return d.keys().hasOnly(['child_id', 'timestamp', 'duration_seconds', 'vocalization_count',
+                                     'voice_seconds', 'avg_volume_db', 'mode', 'target_sound',
+                                     'attempts', 'completions', 'success_rate'])
+              && d.child_id == childId
+              && d.timestamp is timestamp
+              && isCount(d.duration_seconds) && d.duration_seconds <= 86400
+              && isCount(d.vocalization_count)
+              && isNum(d.voice_seconds)
+              && isNum(d.avg_volume_db)
+              && d.mode in ['spark', 'safari', 'cards']
+              && (d.target_sound == null || isStr(d.target_sound, 16))
+              && isCount(d.attempts)
+              && isCount(d.completions)
+              && isNum(d.success_rate) && d.success_rate <= 1;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+.dart_tool/
+build/
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+.idea/
+firebase/rules-test/node_modules/

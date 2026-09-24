@@ -1,0 +1,12 @@
+:root { --ink:#1a1a2e; --muted:#5e5e78; --bg:#fbfaff; --accent:#2fa89f; --panel:#eefaf8; }
+@media (prefers-color-scheme: dark) {
+  :root { --ink:#fff6ec; --muted:#a8a8c8; --bg:#1a1a2e; --accent:#4ecdc4; --panel:#24243d; }
+}
+body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.6 system-ui, "Segoe UI", sans-serif; }
+main { max-width:720px; margin:0 auto; padding:40px 16px 64px; }
+h1 { font-size:1.9rem; line-height:1.2; margin:0 0 4px; }
+h2 { font-size:1.2rem; margin:32px 0 8px; }
+.date { color:var(--muted); margin:0 0 24px; }
+.summary { background:var(--panel); border-left:4px solid var(--accent); padding:14px 18px; border-radius:6px; }
+a { color:var(--accent); }
+li { margin:4px 0; }
