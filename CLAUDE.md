@@ -20,7 +20,7 @@ A vocal imitation practice app for young children who are minimally verbal, spee
 - `lib/services/`: `store.dart`, `cloud_sync.dart` (Firestore mirror, account link/sign-in/restore/delete), `session_tracker.dart`, `progress.dart`, `report.dart` (SLP PDF).
 - `lib/views/`: splash, onboarding, hub, spark (Sound Spark), safari (map + stop with `StopScorer`), cards (AAC wall), rest, parent (zone, progress/settings/family tabs, account, sound check).
 - `lib/widgets/listening.dart`: base for every mic screen (wakelock, lifecycle, session, time limit).
-- `firebase/`: `firestore.rules`, `rules-test/` (node tests), `hosting/` (privacy + deletion pages at https://echosteps-homilabs.web.app).
+- `firebase/`: `firestore.rules`, `rules-test/` (node tests), `hosting/` (privacy + deletion pages at https://echosteps-homilabs.web.app, custom domain echosteps.homilabs.org once DNS is connected). Contact: homilabs.smc@gmail.com.
 
 ## Commands
 - Tests: `flutter test` (host, 79). Rules: `cd firebase/rules-test && npm install && JAVA_HOME=~/jdks/jdk-21.0.12.1+1 firebase emulators:exec --only firestore "npm test" --project demo-echosteps`.

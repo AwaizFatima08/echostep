@@ -10,8 +10,8 @@ Copy-paste material for creating the app in Play Console. Everything here matche
 | App icon 512×512 | `store-assets/icon-512.png` |
 | Feature graphic 1024×500 | `store-assets/feature-graphic-1024x500.png` |
 | Phone screenshots (9:18) | `store-assets/screenshots/phone/` |
-| Privacy policy URL | https://echosteps-homilabs.web.app/privacy |
-| Account deletion URL | https://echosteps-homilabs.web.app/delete-account |
+| Privacy policy URL | https://echosteps.homilabs.org/privacy (once connected; until then https://echosteps-homilabs.web.app/privacy) |
+| Account deletion URL | https://echosteps.homilabs.org/delete-account (until then https://echosteps-homilabs.web.app/delete-account) |
 
 Package `com.homilabs.echosteps` · version 1.0.0 (versionCode 1) · minSdk 24 · targetSdk 36.
 Use **Play App Signing** (the default). `.secrets/echosteps-upload.keystore` is the upload key (credentials in `.secrets/echosteps-upload-keystore-credentials.txt`).
@@ -21,6 +21,15 @@ Use **Play App Signing** (the default). `.secrets/echosteps-upload.keystore` is 
 firebase apps:android:sha:create 1:1002720438311:android:171865da887cc59a538602 <SHA> --project echosteps-homilabs
 ```
 Email/password and anonymous sign-in work without this; it is needed only if Google sign-in or App Check is added later.
+
+## Connecting echosteps.homilabs.org (do this before entering the URLs)
+
+1. Firebase console → project **echosteps-homilabs** → Hosting → **Add custom domain** → `echosteps.homilabs.org`.
+2. Firebase shows a **TXT** record (ownership) and then **A** records. Add them at the DNS provider for `homilabs.org`.
+3. Wait until Hosting shows *Connected* (minutes to a few hours; the SSL certificate is issued automatically).
+4. Check that https://echosteps.homilabs.org/privacy opens, then use the echosteps.homilabs.org URLs in Play Console.
+
+The app's own in-app links use `echosteps-homilabs.web.app`, which keeps serving the same pages permanently, so the uploaded AAB never needs changing.
 
 ## Main store listing
 
@@ -62,13 +71,13 @@ EchoSteps is an educational practice app. It is not a medical device and does no
 ```
 
 **App category**: Education · **Tags**: Educational, Kids, Language (or Early learning)
-**Contact email**: your developer contact address (required and shown publicly; the privacy policy and deletion page point people to it).
+**Contact email**: `homilabs.smc@gmail.com` (also on the privacy and deletion pages). **Website**: https://echosteps.homilabs.org
 
 ## App content
 
 | Section | Answer |
 |---|---|
-| Privacy policy | https://echosteps-homilabs.web.app/privacy |
+| Privacy policy | https://echosteps.homilabs.org/privacy |
 | Ads | **No** |
 | App access | **All functionality is available without special access** (no login needed; accounts are optional) |
 | Content rating (IARC) | Category *Reference, news or educational*. Answer **No** to violence, sexuality, language, controlled substances, gambling, purchases. User interaction: **No** (users can't communicate with each other). Shares location: No. Expected: Everyone / PEGI 3 |
@@ -77,7 +86,7 @@ EchoSteps is an educational practice app. It is not a medical device and does no
 | Government app | No |
 | Financial features | None |
 | Health | Health apps declaration: **none of the listed health features**. It is an educational app (the listing says it is not a medical device) |
-| Account deletion | Accounts can be created: **Yes**. In-app deletion: Parent Zone → Family & account → *Delete account and all data*. Web link: https://echosteps-homilabs.web.app/delete-account |
+| Account deletion | Accounts can be created: **Yes**. In-app deletion: Parent Zone → Family & account → *Delete account and all data*. Web link: https://echosteps.homilabs.org/delete-account |
 | Permissions | `RECORD_AUDIO` (core feature, used only while a listening screen is open) and `INTERNET` (optional backup). No special declaration forms |
 
 ### Families Policy checklist (v1.0.0)

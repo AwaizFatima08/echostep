@@ -226,34 +226,39 @@ class _OnboardingViewState extends State<OnboardingView> {
       const SizedBox(height: 24),
       const Text('Choose a buddy', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
       const SizedBox(height: 10),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          for (final b in Buddy.values)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: BouncyButton(
-                label: b.displayName,
-                onTap: () => setState(() => _buddy = b),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  width: 136,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: ES.card,
-                    borderRadius: BorderRadius.circular(ES.radius),
-                    border: Border.all(color: _buddy == b ? ES.sunshine : ES.cardLine, width: _buddy == b ? 4 : 2),
-                  ),
-                  child: Column(
-                    children: [
-                      BuddyFace(pip: b == Buddy.pip, size: 96),
-                      Text(b.displayName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-                    ],
+      // Two 136dp buddy cards need 304dp; scale them down on narrow phones (e.g. 360dp with
+      // Samsung's display zoom) instead of overflowing.
+      FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (final b in Buddy.values)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: BouncyButton(
+                  label: b.displayName,
+                  onTap: () => setState(() => _buddy = b),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    width: 136,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: ES.card,
+                      borderRadius: BorderRadius.circular(ES.radius),
+                      border: Border.all(color: _buddy == b ? ES.sunshine : ES.cardLine, width: _buddy == b ? 4 : 2),
+                    ),
+                    child: Column(
+                      children: [
+                        BuddyFace(pip: b == Buddy.pip, size: 96),
+                        Text(b.displayName, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
       const SizedBox(height: 28),
       FilledButton(key: const ValueKey('onboarding-next'), onPressed: () => _go(_page + 1), child: const Text('Next')),
