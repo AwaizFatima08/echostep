@@ -14,6 +14,12 @@ A vocal imitation practice app for young children who are minimally verbal, spee
 - Errorless design: no fail states, buzzers or scores. The app never decides "mastered"; a grown-up does.
 - No Gemini (quota exhausted 2026-09-24). Characters are drawn in code (`lib/widgets/characters.dart`); AAC pictures are Noto Color Emoji PNGs; speech is device TTS.
 
+## Status (2026-09-27)
+v1.0.0 (versionCode 1) submitted to Google Play **production** by the owner (business developer account, no closed test needed); under review. Developer name on Play: HomiLabs.
+- Artifacts: `releases/v1.0.0-1/` (AAB, APK, SHA256SUMS, upload package zip); gitignored, in the local and Drive backups.
+- After approval: in `website/index.html`, swap the "Coming soon" span for the commented Play badge link, re-upload to Hostinger and run `firebase deploy --only hosting`. Optionally add the Play app-signing SHA-1 to Firebase (command in `docs/play-console-listing-kit.md`).
+- Next version: bump `version:` in pubspec.yaml (versionCode must increase). Real-voice feedback from testers is the top input for v1.1 (see `docs/testing.md`).
+
 ## Code map
 - `lib/core/audio/`: `dsp.dart` (YIN pitch, harmonic-fit vowels ah/oh/oo/ee, hum detector, minimum-statistics noise floor), `voice_analyzer.dart` (frames, vocalization and syllable counting), `voice_engine.dart` (mic lifecycle with **owner + generation** guards for overlapping screens), `audio_input.dart` (mic + `SynthInput`), `synth_voice.dart`, `speech.dart` (TTS; mutes mic while speaking), `sound_player.dart` (SFX).
 - `lib/core/content.dart`: the 8 Echo Safari targets and the AAC card catalogue (ids are stored data: never rename).
