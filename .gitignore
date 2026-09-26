@@ -62,3 +62,6 @@ art/noto/
 
 # Rules-test tooling
 firebase/rules-test/node_modules/
+
+# Upload bundles (kept in releases/ and ~/Downloads, not in git)
+*.zip
