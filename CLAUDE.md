@@ -20,7 +20,8 @@ A vocal imitation practice app for young children who are minimally verbal, spee
 - `lib/services/`: `store.dart`, `cloud_sync.dart` (Firestore mirror, account link/sign-in/restore/delete), `session_tracker.dart`, `progress.dart`, `report.dart` (SLP PDF).
 - `lib/views/`: splash, onboarding, hub, spark (Sound Spark), safari (map + stop with `StopScorer`), cards (AAC wall), rest, parent (zone, progress/settings/family tabs, account, sound check).
 - `lib/widgets/listening.dart`: base for every mic screen (wakelock, lifecycle, session, time limit).
-- `firebase/`: `firestore.rules`, `rules-test/` (node tests), `hosting/` (privacy + deletion pages at https://echosteps-homilabs.web.app, custom domain echosteps.homilabs.org once DNS is connected). Contact: homilabs.smc@gmail.com.
+- `firebase/`: `firestore.rules`, `rules-test/` (node tests).
+- `website/`: landing page, privacy policy (with the account-deletion section, `#delete-account`) and terms. Hosted at https://echosteps.homilabs.org (Hostinger: upload manually, incl. `.htaccess`) and mirrored by Firebase Hosting at https://echosteps-homilabs.web.app (the app's in-app link). Update both after edits. Contact: homilabs.smc@gmail.com.
 
 ## Commands
 - Tests: `flutter test` (host, 79). Rules: `cd firebase/rules-test && npm install && JAVA_HOME=~/jdks/jdk-21.0.12.1+1 firebase emulators:exec --only firestore "npm test" --project demo-echosteps`.
@@ -28,7 +29,7 @@ A vocal imitation practice app for young children who are minimally verbal, spee
 - Emulator/demo without a mic: `--dart-define=ES_SYNTH_VOICE=true`.
 - Graphics: `flutter test tool/make_graphics_test.dart` (icons, Play icon, feature graphic). Pictures: `python3 scripts/fetch_aac_pictures.py`. SFX: `python3 scripts/make_sfx.py`.
 - Release: `flutter build appbundle --release` (signs via `android/key.properties` → `.secrets/echosteps-upload.keystore`).
-- Deploy Firebase: `firebase deploy --only firestore:rules,auth,hosting --project echosteps-homilabs`.
+- Deploy Firebase: `firebase deploy --only firestore:rules,auth,hosting --project echosteps-homilabs` (hosting serves `website/`).
 - Backup: `bash scripts/backup.sh` (commit first; the GitHub layer refuses untracked/uncommitted files).
 
 ## Locations

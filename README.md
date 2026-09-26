@@ -9,6 +9,6 @@ Playful vocal imitation practice for young children who are minimally verbal, sp
 
 Private by design: the microphone is analysed on the device and never recorded. No ads, no tracking.
 
-Docs: [design review and locked decisions](docs/design-review-v1.md) · [original PDD](docs/product-design-document-v1.md) · [testing](docs/testing.md) · [Play Console kit](docs/play-console-listing-kit.md) · [privacy policy](https://echosteps.homilabs.org/privacy)
+Docs: [design review and locked decisions](docs/design-review-v1.md) · [original PDD](docs/product-design-document-v1.md) · [testing](docs/testing.md) · [Play Console kit](docs/play-console-listing-kit.md) · [website](https://echosteps.homilabs.org) · [privacy policy](https://echosteps.homilabs.org/privacy.html) · [terms](https://echosteps.homilabs.org/terms.html)
 
 Credits: pictures from [Noto Color Emoji](https://github.com/googlefonts/noto-emoji) (Google, Apache 2.0); font [Andika](https://software.sil.org/andika/) (SIL, OFL).

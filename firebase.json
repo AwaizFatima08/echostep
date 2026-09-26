@@ -10,14 +10,30 @@
     }
   },
   "hosting": {
-    "public": "firebase/hosting",
-    "ignore": ["**/.*"],
-    "cleanUrls": true
+    "public": "website",
+    "ignore": [
+      ".htaccess",
+      "**/.*"
+    ],
+    "cleanUrls": true,
+    "redirects": [
+      {
+        "source": "/delete-account",
+        "destination": "/privacy#delete-account",
+        "type": 301
+      }
+    ]
   },
   "emulators": {
-    "firestore": { "port": 8085 },
-    "auth": { "port": 9099 },
-    "ui": { "enabled": false },
+    "firestore": {
+      "port": 8085
+    },
+    "auth": {
+      "port": 9099
+    },
+    "ui": {
+      "enabled": false
+    },
     "singleProjectMode": true
   }
 }
