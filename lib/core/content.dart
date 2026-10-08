@@ -74,6 +74,7 @@ class SoundTarget {
     'oo' => '/u/',
     'ee' => '/i/',
     'mmm' => '/m/',
+    'bye' => '/b/ + /ai/',
     _ => '/$id/',
   };
 }
@@ -168,6 +169,53 @@ const targets = <SoundTarget>[
     tip: 'Tongue taps behind the top teeth: "da-da-da".',
     cards: ['dada', 'dog', 'duck'],
   ),
+  // v1.1: four more early syllables. Like every syllable stop these are
+  // recorded as practised, never mastered (the analyser can't tell
+  // consonants apart; a grown-up decides, L14).
+  SoundTarget(
+    id: 'pa',
+    label: 'Pa',
+    spoken: 'Pah. Pah. Pah.',
+    kind: TargetKind.syllable,
+    mouth: MouthShape.closed,
+    releaseMouth: MouthShape.ah,
+    color: Color(0xFFFFB347),
+    tip: 'Lips together, then a little puff of air: "pa-pa-pa". Feel the puff on your hand.',
+    cards: ['papa', 'pear', 'popcorn'],
+  ),
+  SoundTarget(
+    id: 'wa',
+    label: 'Wa',
+    spoken: 'Wah. Wah. Wah.',
+    kind: TargetKind.syllable,
+    mouth: MouthShape.oo,
+    releaseMouth: MouthShape.ah,
+    color: Color(0xFF7FD8F7),
+    tip: 'Start with round "oo" lips, then open wide: "wa-wa-wa".',
+    cards: ['water', 'wave', 'wow'],
+  ),
+  SoundTarget(
+    id: 'na',
+    label: 'Na',
+    spoken: 'Nah. Nah. Nah.',
+    kind: TargetKind.syllable,
+    mouth: MouthShape.closed,
+    releaseMouth: MouthShape.ah,
+    color: Color(0xFFC9E265),
+    tip: 'Tongue up behind the top teeth and hum through the nose, then open: "na-na-na".',
+    cards: ['nana', 'nose', 'nap'],
+  ),
+  SoundTarget(
+    id: 'bye',
+    label: 'Bye-bye',
+    spoken: 'Bah-bye. Bah-bye.',
+    kind: TargetKind.syllable,
+    mouth: MouthShape.closed,
+    releaseMouth: MouthShape.ah,
+    color: Color(0xFFFF8FB8),
+    tip: 'Wave while you say it: "bye-bye". Any two-part sound counts.',
+    cards: ['bye', 'bird', 'bed'],
+  ),
 ];
 
 SoundTarget? targetById(String id) {
@@ -232,7 +280,56 @@ const aacCards = <AacCard>[
   AacCard('dada', 'dada', '👨'),
   AacCard('dog', 'dog', '🐶'),
   AacCard('duck', 'duck', '🦆'),
+  AacCard('papa', 'papa', '🧔'),
+  AacCard('pear', 'pear', '🍐'),
+  AacCard('popcorn', 'popcorn', '🍿'),
+  AacCard('water', 'water', '💧'),
+  AacCard('wave', 'wave', '🌊'),
+  AacCard('wow', 'wow', '😮'),
+  AacCard('nana', 'nana', '👵'),
+  AacCard('nose', 'nose', '👃'),
+  AacCard('nap', 'nap', '🛌'),
+  AacCard('bye', 'bye', '👋'),
+  AacCard('bird', 'bird', '🐦'),
+  AacCard('bed', 'bed', '🛏️'),
 ];
+
+/// Animal Friends (v1.1): each animal's call is one of the Safari sounds, so
+/// echoing a cow still counts as practising "oo". Pictures are Noto Color
+/// Emoji PNGs in `assets/aac/` like the cards (fetched by the same script).
+class AnimalFriend {
+  const AnimalFriend(this.id, this.name, this.emoji, this.call, this.spoken, this.targetId);
+
+  final String id;
+  final String name;
+  final String emoji;
+
+  /// What the child sees ("Moo").
+  final String call;
+
+  /// What the TTS says (spelled to sound right, slowly).
+  final String spoken;
+  final String targetId;
+
+  String get asset => 'assets/aac/$id.png';
+  SoundTarget get target => targetById(targetId)!;
+}
+
+const animals = <AnimalFriend>[
+  AnimalFriend('cow', 'Cow', '🐮', 'Moo', 'Moooo', 'oo'),
+  AnimalFriend('owl', 'Owl', '🦉', 'Hoo', 'Hoooo', 'oo'),
+  AnimalFriend('sheep', 'Sheep', '🐑', 'Baa', 'Baaa. Baaa.', 'ba'),
+  AnimalFriend('monkey_friend', 'Monkey', '🐵', 'Oo-ah', 'Oo ah. Oo ah. Oo ah.', 'ah'),
+  AnimalFriend('bee', 'Bee', '🐝', 'Mmm', 'Mmmmm', 'mmm'),
+  AnimalFriend('cat', 'Cat', '🐱', 'Meow', 'Mee-ow. Mee-ow.', 'ee'),
+];
+
+AnimalFriend? animalById(String id) {
+  for (final a in animals) {
+    if (a.id == id) return a;
+  }
+  return null;
+}
 
 AacCard? cardById(String id) {
   for (final c in aacCards) {

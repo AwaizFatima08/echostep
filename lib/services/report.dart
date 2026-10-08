@@ -29,6 +29,9 @@ class Report {
   static String _mode(String m) => switch (m) {
     'spark' => 'Sound Spark',
     'safari' => 'Echo Safari',
+    'animals' => 'Animal Friends',
+    'turns' => 'Echo Turns',
+    'pitch' => 'Pitch Slide',
     _ => 'My Cards',
   };
 

@@ -115,3 +115,12 @@ EchoSteps is an educational practice app. It is not a medical device and does no
 2. **Personal developer accounts created after November 2023** need a closed test with at least 12 opted-in testers for 14 days before production access. Organisation accounts are exempt.
 3. Do the manual real-voice check in `docs/testing.md` on at least one real phone: the emulator has no microphone.
 4. Optional: restrict the Firebase Android API key to package `com.homilabs.echosteps` + the signing SHA-1s in Google Cloud Console → APIs & Services → Credentials.
+
+
+## Release notes — v1.1.0 (versionCode 2)
+
+```
+New: Animal Friends (echo the cow, owl, sheep, monkey, bee and cat), Echo Turns
+(my turn, your turn with Pip) and Pitch Slide (sing high and low to fly Pip).
+Four more Echo Safari sounds (pa, wa, na, bye-bye) and 12 more picture cards.
+```

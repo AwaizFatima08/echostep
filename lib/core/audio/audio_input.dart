@@ -92,7 +92,7 @@ class SynthInput implements AudioInput {
     final s = SynthVoice(seed: 5);
     Float32List piece() => switch (targetId) {
       'mmm' => s.hum(seconds: 2.0, f0: 280, amp: 0.25),
-      'ba' || 'ma' || 'da' => s.babble(count: 4, f0: 300, amp: 0.3),
+      'ba' || 'ma' || 'da' || 'pa' || 'wa' || 'na' || 'bye' => s.babble(count: 4, f0: 300, amp: 0.3),
       _ => s.childVowel(
         Vowel.values.firstWhere((v) => v.name == targetId, orElse: () => Vowel.ah),
         seconds: 2.0,

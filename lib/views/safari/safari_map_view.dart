@@ -160,9 +160,14 @@ class _Stop extends StatelessWidget {
                         painter: MouthPainter(open: shape.open, width: shape.width, teeth: shape.teeth),
                       ),
                     ),
-                    Text(
-                      target.label,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: target.color, height: 1.1),
+                    // One line always: "Bye-bye" must not wrap inside the circle.
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        target.label,
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: target.color, height: 1.1),
+                      ),
                     ),
                   ],
                 ),

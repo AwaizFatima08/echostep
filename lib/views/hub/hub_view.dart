@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+
 import '../../core/content.dart';
 import '../../core/theme.dart';
 import '../../models/child.dart';
@@ -10,6 +11,9 @@ import '../../widgets/characters.dart';
 import '../../widgets/effects.dart';
 import '../../widgets/kid_widgets.dart';
 import '../../widgets/parent_gate.dart';
+import '../animals/animal_friends_view.dart';
+import '../pitch/pitch_slide_view.dart';
+import '../turns/echo_turns_view.dart';
 import '../cards/card_wall_view.dart';
 import '../parent/parent_zone_view.dart';
 import '../safari/safari_map_view.dart';
@@ -163,36 +167,70 @@ class _HubViewState extends State<HubView> {
                   ],
                 ),
                 const SizedBox(height: 14),
+                // Six activities in two columns; the grid scrolls on short phones.
                 Expanded(
-                  child: _HubCard(
-                    key: const ValueKey('hub-spark'),
-                    color: ES.coral,
-                    title: 'Sound Spark',
-                    subtitle: 'Make sound, see magic!',
-                    art: const Milo(size: 150, awake: 0, glow: 0.25),
-                    onTap: () => _open(const SoundSparkView()),
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Expanded(
-                  child: _HubCard(
-                    key: const ValueKey('hub-safari'),
-                    color: ES.turquoise,
-                    title: 'Echo Safari',
-                    subtitle: 'Help Pip say "${next.label}"!',
-                    art: Pip(size: 140, shape: next.releaseMouth ?? next.mouth),
-                    onTap: () => _open(const SafariMapView()),
-                  ),
-                ),
-                const SizedBox(height: 14),
-                Expanded(
-                  child: _HubCard(
-                    key: const ValueKey('hub-cards'),
-                    color: ES.sunshine,
-                    title: 'My Cards',
-                    subtitle: 'Tap a picture to talk',
-                    art: const _CardFan(),
-                    onTap: () => _open(const CardWallView()),
+                  child: LayoutBuilder(
+                    builder: (context, box) {
+                      final cardH = ((box.maxHeight - 14) / 2).clamp(150.0, 210.0);
+                      return GridView.count(
+                        key: const ValueKey('hub-grid'),
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 14,
+                        crossAxisSpacing: 14,
+                        childAspectRatio: ((box.maxWidth - 14) / 2) / cardH,
+                        padding: const EdgeInsets.only(bottom: 8),
+                        children: [
+                          _HubCard(
+                            key: const ValueKey('hub-spark'),
+                            color: ES.coral,
+                            title: 'Sound Spark',
+                            subtitle: 'Make sound, see magic!',
+                            art: const Milo(size: 110, awake: 0, glow: 0.25),
+                            onTap: () => _open(const SoundSparkView()),
+                          ),
+                          _HubCard(
+                            key: const ValueKey('hub-safari'),
+                            color: ES.turquoise,
+                            title: 'Echo Safari',
+                            subtitle: 'Help Pip say "${next.label}"!',
+                            art: Pip(size: 100, shape: next.releaseMouth ?? next.mouth),
+                            onTap: () => _open(const SafariMapView()),
+                          ),
+                          _HubCard(
+                            key: const ValueKey('hub-cards'),
+                            color: ES.sunshine,
+                            title: 'My Cards',
+                            subtitle: 'Tap a picture to talk',
+                            art: const _CardFan(),
+                            onTap: () => _open(const CardWallView()),
+                          ),
+                          _HubCard(
+                            key: const ValueKey('hub-animals'),
+                            color: ES.mint,
+                            title: 'Animal Friends',
+                            subtitle: 'Moo, baa, meow!',
+                            art: Image.asset(animals.first.asset, width: 100, height: 100),
+                            onTap: () => _open(const AnimalFriendsView()),
+                          ),
+                          _HubCard(
+                            key: const ValueKey('hub-turns'),
+                            color: ES.lilac,
+                            title: 'Echo Turns',
+                            subtitle: 'Pip, then you!',
+                            art: const Milo(size: 100, awake: 1, glow: 0.2),
+                            onTap: () => _open(const EchoTurnsView()),
+                          ),
+                          _HubCard(
+                            key: const ValueKey('hub-pitch'),
+                            color: ES.peach,
+                            title: 'Pitch Slide',
+                            subtitle: 'Sing high, sing low',
+                            art: const Pip(size: 100, shape: MouthShape.ah, glow: 0.4),
+                            onTap: () => _open(const PitchSlideView()),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ],
@@ -235,36 +273,27 @@ class _HubCard extends StatelessWidget {
             colors: [color.withValues(alpha: 0.22), ES.card],
           ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Row(
+        padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+        child: Column(
           children: [
             Expanded(
               flex: 5,
               child: FittedBox(fit: BoxFit.scaleDown, child: art),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              flex: 6,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      title,
-                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700, color: color),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 18, height: 1.2),
-                  ),
-                ],
+            const SizedBox(height: 4),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                title,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: color),
               ),
+            ),
+            Text(
+              subtitle,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 15, height: 1.2),
             ),
           ],
         ),

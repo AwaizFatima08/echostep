@@ -66,3 +66,14 @@ Reviewed against `docs/product-design-document-v1.md` (the owner's PDD). Where t
 - **Contact email** for the privacy policy and store listing: needs the owner's choice.
 - **Play developer account type:** personal accounts created after Nov 2023 need a 14-day closed test with 12 testers before production.
 - **Firebase API key restriction** (to the Android package and signing SHA-1s) should be applied in Google Cloud Console once the Play app-signing key exists.
+
+
+## v1.1 additions (2026-10-09)
+
+All within §0: errorless, no scores, the app never marks anything mastered, mic audio stays on the device, characters in code, pictures from Noto Color Emoji, TTS voice.
+
+- **Animal Friends** (hub card): cow "Moo" (oo), owl "Hoo" (oo), sheep "Baa" (ba), monkey "Oo-ah" (ah), bee "Mmm" (mmm), cat "Meow" (ee). Tap, hear, echo; the animal wiggles and sparkles while the sound matches and is simply calm otherwise. A finished call calls `Store.recordCompletion` for the matching Safari target, so the Progress tab and SLP report stay one list. Session mode `animals`.
+- **Echo Turns**: my turn / your turn for the child's suggested sound. Pip says it, a yellow ring and "Your turn!" appear on Milo, the child echoes (a shorter hold than a Safari stop), Pip claps; four turns finish a round (one Safari completion). A quiet child just hears the sound again after 8 s. Mode `turns`.
+- **Pitch Slide**: Pip's height follows the voice's pitch (`pitchNorm`), leaving a 6-second trail over a dotted guide of gentle hills. No scoring; calm mode flattens the hills and slows the scroll. Mode `pitch`. (`PitchTrail` is pure Dart and unit-tested.)
+- **Safari**: four more syllable stops after `da` — `pa`, `wa`, `na`, `bye` ("Bye-bye") — with 12 new cards. Like all syllable stops they are recorded as practised, never mastered (the analyser cannot tell consonants apart; L14).
+- The hub became a scrolling two-column grid of six cards (keys `hub-animals`, `hub-turns`, `hub-pitch` added).

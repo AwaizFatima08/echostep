@@ -25,7 +25,8 @@ def noto_name(emoji: str) -> str:
 
 
 def main():
-    cards = re.findall(r"AacCard\('([a-z_]+)', '[^']+', '([^']+)'", CONTENT.read_text(encoding="utf-8"))
+    # Cards: AacCard('id', 'word', 'emoji'); animals: AnimalFriend('id', 'Name', 'emoji', ...).
+    cards = re.findall(r"(?:AacCard|AnimalFriend)\('([a-z_]+)', '[^']+', '([^']+)'", CONTENT.read_text(encoding="utf-8"))
     CACHE.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     for card_id, emoji in cards:
