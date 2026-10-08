@@ -45,6 +45,7 @@ dependencies:
   share_plus: ^13.3.0
   url_launcher: ^6.3.2
   clock: ^1.1.2
+  lottie: ^3.6.1
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +71,7 @@ flutter:
   assets:
     - assets/aac/
     - assets/audio/sfx/
+    - assets/lottie/
     - assets/fonts/OFL.txt
   fonts:
     - family: Andika
