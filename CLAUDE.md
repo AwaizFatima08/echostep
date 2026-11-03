@@ -14,23 +14,23 @@ A vocal imitation practice app for young children who are minimally verbal, spee
 - Errorless design: no fail states, buzzers or scores. The app never decides "mastered"; a grown-up does.
 - No Gemini (quota exhausted 2026-09-24). Characters are drawn in code (`lib/widgets/characters.dart`); AAC pictures are Noto Color Emoji PNGs; speech is device TTS.
 
-## Status (2026-10-09)
-v1.0.0 (versionCode 1) is live on Google Play (developer name HomiLabs). **v1.1.0 (versionCode 2) is built (`releases/v1.1.0-2/`, commit eef01d0) and **submitted to Play production for review on 2026-10-09**: three new hub activities — Animal Friends (`lib/views/animals/`, six animals whose calls are Safari sounds; a finished call is recorded as practising that sound), Echo Turns (`lib/views/turns/`, four my-turn/your-turn echoes of the suggested sound) and Pitch Slide (`lib/views/pitch/`, Pip flies with the voice's pitch; no scoring) — plus four Safari stops (`pa`, `wa`, `na`, `bye`), 12 AAC cards and 6 animal pictures (`scripts/fetch_aac_pictures.py` now also reads `AnimalFriend(...)`). Session modes `animals`, `turns`, `pitch` (named in `report.dart`). The hub is a scrolling 2-column grid of six cards. Host tests: 85.
-- Artifacts: `releases/v1.0.0-1/` and `releases/v1.1.0-2/` (AAB, APK, SHA256SUMS, BUILD_INFO); gitignored, in the local and Drive backups. Phone check (Samsung A12, font scale 1.3, 339 dp wide) passed on 2026-10-09.
-- After approval: in `website/index.html`, swap the "Coming soon" span for the commented Play badge link, re-upload to Hostinger and run `firebase deploy --only hosting`. Optionally add the Play app-signing SHA-1 to Firebase (command in `docs/play-console-listing-kit.md`).
-- Next version: bump `version:` in pubspec.yaml (versionCode must increase). Real-voice feedback from testers is the top input for v1.1 (see `docs/testing.md`).
+## Status (2026-11-04)
+v1.0.0 and v1.1.0 are live on Google Play (developer name HomiLabs; listing "EchoSteps: Speech Play Lab"). **v1.2.0 (versionCode 3)** adds **My Steps**: a guided path of 7 chapters × 3 lessons (`lib/core/lessons.dart`), each lesson three steps shown as a "first, then, then" picture schedule (`lib/views/steps/`: `path_view.dart`, `lesson_view.dart`). Steps reuse the free-play screens in a lesson mode (`lesson: true` / `lessonSeconds` / `only:`) that finish with `LessonContinueButton` (pops `true`), plus the new **First Words** step (`lib/views/words/word_step_view.dart`, session mode `word`): a picture card whose `AacCard.sound` sets the scored sound. Two new cards (`up`, `uh_oh`). Progress: `ChildProfile.lessonsDone` (`lessons_done` locally and in Firestore). Hub: My Steps banner above the activity grid. Parent Zone and the PDF show lessons finished. App version string: `lib/core/version.dart` (test checks it against pubspec).
+- 2026-11-04: Firestore rules fixed and deployed: v1.1 session modes (`animals`, `turns`, `pitch`) were being rejected (their sessions never backed up, and a rejected session failed its whole upload batch). Rules now also accept `word` and `lessons_done`.
+- Artifacts: `releases/v1.<n>.0-<code>/` (AAB, APK, SHA256SUMS); gitignored, in the local and Drive backups.
+- Next version: bump `version:` in pubspec.yaml **and** `appVersion` in `lib/core/version.dart`. Real-voice feedback from testers is still the top input (see `docs/testing.md`).
 
 ## Code map
 - `lib/core/audio/`: `dsp.dart` (YIN pitch, harmonic-fit vowels ah/oh/oo/ee, hum detector, minimum-statistics noise floor), `voice_analyzer.dart` (frames, vocalization and syllable counting), `voice_engine.dart` (mic lifecycle with **owner + generation** guards for overlapping screens), `audio_input.dart` (mic + `SynthInput`), `synth_voice.dart`, `speech.dart` (TTS; mutes mic while speaking), `sound_player.dart` (SFX).
-- `lib/core/content.dart`: the 12 Echo Safari targets, the AAC card catalogue and the Animal Friends list (ids are stored data: never rename).
+- `lib/core/content.dart`: the 12 Echo Safari targets, the AAC card catalogue (with each word's practice `sound`) and the Animal Friends list. `lib/core/lessons.dart`: My Steps chapters, lessons and steps. Ids in both are stored data: never rename.
 - `lib/services/`: `store.dart`, `cloud_sync.dart` (Firestore mirror, account link/sign-in/restore/delete), `session_tracker.dart`, `progress.dart`, `report.dart` (SLP PDF).
-- `lib/views/`: splash, onboarding, hub, spark (Sound Spark), safari (map + stop with `StopScorer`), animals, turns, pitch, cards (AAC wall), rest, parent (zone, progress/settings/family tabs, account, sound check).
+- `lib/views/`: splash, onboarding, hub, steps (My Steps path + lesson runner), words (First Words step), spark (Sound Spark), safari (map + stop with `StopScorer`), animals, turns, pitch, cards (AAC wall), rest, parent (zone, progress/settings/family tabs, account, sound check).
 - `lib/widgets/listening.dart`: base for every mic screen (wakelock, lifecycle, session, time limit).
 - `firebase/`: `firestore.rules`, `rules-test/` (node tests).
 - `website/`: landing page, privacy policy (with the account-deletion section, `#delete-account`) and terms. Hosted at https://echosteps.homilabs.org (Hostinger: upload manually, incl. `.htaccess`) and mirrored by Firebase Hosting at https://echosteps-homilabs.web.app (the app's in-app link). Update both after edits. Contact: homilabs.smc@gmail.com.
 
 ## Commands
-- Tests: `flutter test` (host, 85). Rules: `cd firebase/rules-test && npm install && JAVA_HOME=~/jdks/jdk-21.0.12.1+1 firebase emulators:exec --only firestore "npm test" --project demo-echosteps`.
+- Tests: `flutter test` (host, 97); `flutter test test_slow/` (~30 min: all 21 lessons played through; run before a release). Rules: `cd firebase/rules-test && npm install && JAVA_HOME=~/jdks/jdk-21.0.12.1+1 firebase emulators:exec --only firestore "npm test" --project demo-echosteps`.
 - On-device: see `docs/testing.md` (build the test APK first, then `flutter drive --use-application-binary`).
 - Emulator/demo without a mic: `--dart-define=ES_SYNTH_VOICE=true`.
 - Graphics: `flutter test tool/make_graphics_test.dart` (icons, Play icon, feature graphic). Pictures: `python3 scripts/fetch_aac_pictures.py`. SFX: `python3 scripts/make_sfx.py`.

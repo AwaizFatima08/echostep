@@ -161,6 +161,7 @@ class Store extends ChangeNotifier {
     c.practised.clear();
     c.mastered.clear();
     c.unlockedCards.clear();
+    c.lessonsDone.clear();
     c.sessions.clear();
     c
       ..totalVocalizations = 0
@@ -202,6 +203,22 @@ class Store extends ChangeNotifier {
     }
     childUpdated(c);
     return fresh;
+  }
+
+  /// Records a First Words step: the word's sound counts as practised and
+  /// the card is unlocked. Returns true when the card is new.
+  bool recordWord(ChildProfile c, AacCard card) {
+    final t = card.target;
+    if (t != null) c.practised[t.id] = (c.practised[t.id] ?? 0) + 1;
+    final fresh = !card.core && c.unlockedCards.add(card.id);
+    childUpdated(c);
+    return fresh;
+  }
+
+  /// Records a finished My Steps lesson.
+  void recordLesson(ChildProfile c, String lessonId) {
+    c.lessonsDone[lessonId] = (c.lessonsDone[lessonId] ?? 0) + 1;
+    childUpdated(c);
   }
 
   void setMastered(ChildProfile c, String targetId, bool mastered) {
@@ -260,6 +277,9 @@ class Store extends ChangeNotifier {
       local.practised[e.key] = math.max(local.practised[e.key] ?? 0, e.value);
     }
     local.unlockedCards.addAll(remote.unlockedCards);
+    for (final e in remote.lessonsDone.entries) {
+      local.lessonsDone[e.key] = math.max(local.lessonsDone[e.key] ?? 0, e.value);
+    }
     local
       ..totalVocalizations = math.max(local.totalVocalizations, remote.totalVocalizations)
       ..totalSeconds = math.max(local.totalSeconds, remote.totalSeconds)

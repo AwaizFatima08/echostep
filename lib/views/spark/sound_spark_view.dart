@@ -17,7 +17,10 @@ import '../../widgets/listening.dart';
 /// bubbles, louder sounds bigger rainbow ones and stars. Silence just lets
 /// him doze off again: nothing is ever "wrong".
 class SoundSparkView extends StatefulWidget {
-  const SoundSparkView({super.key});
+  const SoundSparkView({super.key, this.lessonSeconds});
+
+  /// My Steps lesson step: play for this long, then "next step".
+  final int? lessonSeconds;
 
   @override
   State<SoundSparkView> createState() => _SoundSparkViewState();
@@ -38,6 +41,8 @@ class _SoundSparkViewState extends ListeningState<SoundSparkView> {
   bool _wasAsleep = true;
   Offset _mouth = Offset.zero;
   double _pitch = 0.5;
+  double _lessonT = 0;
+  bool _lessonDone = false;
 
   static const _praise = ['Wow!', 'Beautiful sound!', 'Yay!', 'I hear you!', 'More, more!', 'So good!'];
 
@@ -91,6 +96,16 @@ class _SoundSparkViewState extends ListeningState<SoundSparkView> {
       services.speech.prompt(micOn ? 'Can you say, ahhh?' : 'Tap Milo!');
     }
     if (_t > _blinkAt + 0.18) _blinkAt = _t + 2.5 + _rand.nextDouble() * 3;
+    final limit = widget.lessonSeconds;
+    if (limit != null && !_lessonDone) {
+      _lessonT += dt;
+      if (_lessonT >= limit) {
+        _lessonDone = true;
+        services.sound.sfx(Sfx.bloom);
+        _field.burst(_mouth, count: 18, calm: calm);
+        services.speech.prompt('Great sounds!');
+      }
+    }
     setState(() {});
   }
 
@@ -151,6 +166,20 @@ class _SoundSparkViewState extends ListeningState<SoundSparkView> {
                     ),
                   ),
                   if (_awake < 0.3) _Zzz(anchor: center + Offset(size * 0.3, -size * 0.35), t: _t),
+                  if (widget.lessonSeconds != null && !_lessonDone)
+                    Positioned(
+                      top: 34,
+                      left: 0,
+                      right: 0,
+                      child: Center(child: LessonTimeBar(fraction: _lessonT / widget.lessonSeconds!)),
+                    ),
+                  if (_lessonDone)
+                    Positioned.fill(
+                      child: ColoredBox(
+                        color: ES.canvasDeep.withValues(alpha: 0.55),
+                        child: const Center(child: LessonContinueButton()),
+                      ),
+                    ),
                   Positioned(top: 8, left: 8, child: const KidBackButton()),
                   Positioned(
                     top: 8,

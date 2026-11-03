@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/content.dart';
+import '../../core/lessons.dart';
 import '../../core/theme.dart';
 import '../../models/child.dart';
 import '../../services/progress.dart';
@@ -118,6 +119,8 @@ class _ProgressTabState extends State<ProgressTab> {
             ],
           ),
         ),
+        const SizedBox(height: 14),
+        _StepsPanel(child: c),
         const SizedBox(height: 14),
         PanelCard(
           child: Column(
@@ -406,3 +409,56 @@ class _SoundChip extends StatelessWidget {
 
 /// "1 active day", "3 active days".
 String _count(int n, String noun) => '$n $noun${n == 1 ? '' : 's'}';
+
+/// My Steps progress for grown-ups: lessons finished per chapter.
+class _StepsPanel extends StatelessWidget {
+  const _StepsPanel({required this.child});
+  final ChildProfile child;
+
+  @override
+  Widget build(BuildContext context) {
+    final done = child.lessonsDone;
+    final next = nextLesson(done);
+    return PanelCard(
+      key: const ValueKey('steps-panel'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SectionTitle(
+            'My Steps',
+            icon: Icons.route_rounded,
+            trailing: Text(
+              '${lessonsFinished(done)} / ${allLessons.length} lessons',
+              style: const TextStyle(color: ES.muted, fontWeight: FontWeight.w700),
+            ),
+          ),
+          for (final ch in chapters)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      ch.title,
+                      style: TextStyle(color: ch.color, fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                  for (final l in ch.lessons)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: Icon(
+                        (done[l.id] ?? 0) > 0 ? Icons.star_rounded : Icons.star_outline_rounded,
+                        color: (done[l.id] ?? 0) > 0 ? ES.sunshine : ES.cardLine,
+                        size: 26,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 6),
+          Hint('Next: ${chapterOf(next).title}, "${next.title}". ${chapterOf(next).subtitle}', size: 13),
+        ],
+      ),
+    );
+  }
+}

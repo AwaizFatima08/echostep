@@ -20,7 +20,10 @@ import '../../widgets/listening.dart';
 import '../safari/safari_stop_view.dart' show StopScorer;
 
 class AnimalFriendsView extends StatefulWidget {
-  const AnimalFriendsView({super.key});
+  const AnimalFriendsView({super.key, this.only});
+
+  /// My Steps lesson step: echo just this animal, then "next step".
+  final AnimalFriend? only;
 
   @override
   State<AnimalFriendsView> createState() => _AnimalFriendsViewState();
@@ -46,8 +49,15 @@ class _AnimalFriendsViewState extends ListeningState<AnimalFriendsView> {
   @override
   String? get targetId => _animal?.targetId;
 
+  bool get _lesson => widget.only != null;
+  bool _lessonDone = false;
+
   @override
   void onStarted() {
+    if (_lesson) {
+      unawaited(_choose(widget.only!));
+      return;
+    }
     unawaited(services.speech.prompt('Tap an animal!'));
   }
 
@@ -141,6 +151,10 @@ class _AnimalFriendsViewState extends ListeningState<AnimalFriendsView> {
     await services.speech.prompt('${a.call}! You did it!');
     await Future<void>.delayed(const Duration(milliseconds: 900));
     if (!mounted) return;
+    if (_lesson) {
+      setState(() => _lessonDone = true);
+      return;
+    }
     setState(() {
       _phase = _Phase.choosing;
       _animal = null;
@@ -189,8 +203,9 @@ class _AnimalFriendsViewState extends ListeningState<AnimalFriendsView> {
                         ),
                         Expanded(
                           child: LayoutBuilder(
-                            builder: (context, inner) =>
-                                a == null ? _grid(inner.maxWidth, inner.maxHeight) : _stage(a, inner.maxWidth, inner.maxHeight),
+                            builder: (context, inner) => a == null
+                                ? _grid(inner.maxWidth, inner.maxHeight)
+                                : _stage(a, inner.maxWidth, inner.maxHeight),
                           ),
                         ),
                         Padding(
@@ -206,6 +221,26 @@ class _AnimalFriendsViewState extends ListeningState<AnimalFriendsView> {
                       ],
                     ),
                   ),
+                  if (_lessonDone && a != null)
+                    Positioned.fill(
+                      child: ColoredBox(
+                        color: ES.canvasDeep.withValues(alpha: 0.7),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(a.asset, width: 150, height: 150),
+                              Text(
+                                '${a.call}!',
+                                style: const TextStyle(fontSize: 40, fontWeight: FontWeight.w700, color: ES.sunshine),
+                              ),
+                              const SizedBox(height: 28),
+                              const LessonContinueButton(),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   Positioned(top: 8, left: 8, child: KidBackButton(onTap: a == null ? null : _back)),
                   if (_phase == _Phase.listening)
                     Positioned(
@@ -231,6 +266,10 @@ class _AnimalFriendsViewState extends ListeningState<AnimalFriendsView> {
 
   void _back() {
     services.speech.hush();
+    if (_lesson) {
+      Navigator.of(context).maybePop();
+      return;
+    }
     setState(() {
       _phase = _Phase.choosing;
       _animal = null;

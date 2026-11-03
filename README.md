@@ -2,11 +2,13 @@
 
 Playful vocal imitation practice for young children who are minimally verbal, speech-delayed or autistic. Android, Flutter.
 
+- **My Steps** (v1.2): a guided path of 7 chapters and 21 short lessons, from any sound to first little words; each lesson is three steps on a "first, then, then" picture schedule.
 - **Sound Spark**: any sound wakes Milo the bear, who glows and blows bubbles. Nothing to get wrong.
 - **Echo Safari**: Pip the bird models twelve sounds (Ah, Mmm, Oo, Ba, Ee, Ma, Oh, Da, Pa, Wa, Na, Bye-bye) with their mouth shapes; the child imitates, a flower blooms, picture cards unlock.
 - **Animal Friends**: echo the cow, owl, sheep, monkey, bee and cat; every call is one of the Safari sounds in disguise.
 - **Echo Turns**: my turn, your turn with Pip, four echoes to a round.
 - **Pitch Slide**: sing high and low to fly Pip over the hills.
+- **First Words** (inside My Steps): Pip shows a picture card and says the word; the child tries and the card unlocks.
 - **My Cards**: tap a picture to hear the word (AAC). Core words are always available.
 - **Parent Zone** (behind an adult gate): Vocal Growth Tree, weekly chart, sound progress, "mastered" marks, a PDF report for the speech therapist, settings, optional cloud backup and accounts.
 

@@ -164,6 +164,7 @@ class ChildProfile {
     Map<String, int>? practised,
     Set<String>? mastered,
     Set<String>? unlockedCards,
+    Map<String, int>? lessonsDone,
     List<SessionRecord>? sessions,
     this.totalVocalizations = 0,
     this.totalSeconds = 0,
@@ -175,6 +176,7 @@ class ChildProfile {
        practised = practised ?? {},
        mastered = mastered ?? {},
        unlockedCards = unlockedCards ?? {},
+       lessonsDone = lessonsDone ?? {},
        sessions = sessions ?? [];
 
   /// Sessions kept on the device for charts and the report (about a year of
@@ -197,6 +199,9 @@ class ChildProfile {
 
   /// AAC cards unlocked through Echo Safari (core cards are always on).
   final Set<String> unlockedCards;
+
+  /// My Steps (v1.2): times each lesson was finished, by lesson id.
+  final Map<String, int> lessonsDone;
   final List<SessionRecord> sessions;
 
   int totalVocalizations;
@@ -253,6 +258,7 @@ class ChildProfile {
     'practised_sounds': practised,
     'mastered_sounds': mastered.toList(),
     'unlocked_cards': unlockedCards.toList(),
+    'lessons_done': lessonsDone,
     'stats': statsJson(),
     'sessions': [for (final s in sessions) s.toJson()],
   };
@@ -281,6 +287,9 @@ class ChildProfile {
       },
       mastered: {for (final m in (j['mastered_sounds'] as List?) ?? const []) '$m'},
       unlockedCards: {for (final c in (j['unlocked_cards'] as List?) ?? const []) '$c'},
+      lessonsDone: {
+        for (final e in ((j['lessons_done'] as Map?) ?? const {}).entries) '${e.key}': (e.value as num).toInt(),
+      },
       sessions: [
         for (final s in (j['sessions'] as List?) ?? const [])
           SessionRecord.fromJson((s as Map).cast<String, dynamic>()),

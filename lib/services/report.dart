@@ -9,6 +9,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:share_plus/share_plus.dart';
 
 import '../core/content.dart';
+import '../core/lessons.dart';
 import '../models/child.dart';
 import 'progress.dart';
 
@@ -32,6 +33,7 @@ class Report {
     'animals' => 'Animal Friends',
     'turns' => 'Echo Turns',
     'pitch' => 'Pitch Slide',
+    'word' => 'First Words',
     _ => 'My Cards',
   };
 
@@ -293,7 +295,8 @@ class Report {
           pw.SizedBox(height: 16),
           pw.Text(
             'All time: ${c.totalSessions} sessions, ${_mins(c.totalSeconds / 60)} minutes, '
-            '${c.totalVocalizations} vocalizations.',
+            '${c.totalVocalizations} vocalizations. My Steps: ${lessonsFinished(c.lessonsDone)} of '
+            '${allLessons.length} lessons finished.',
             style: const pw.TextStyle(fontSize: 9, color: _ink),
           ),
           pw.SizedBox(height: 18),

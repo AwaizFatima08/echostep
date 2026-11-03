@@ -188,3 +188,47 @@ Route<T> fadeRoute<T>(Widget page, {RouteSettings? settings}) => PageRouteBuilde
     child: c,
   ),
 );
+
+/// In a My Steps lesson, the one way on from a finished step: a big arrow
+/// that returns to the lesson schedule.
+class LessonContinueButton extends StatelessWidget {
+  const LessonContinueButton({super.key});
+
+  @override
+  Widget build(BuildContext context) => Pulse(
+    child: RoundButton(
+      key: const ValueKey('lesson-continue'),
+      icon: Icons.arrow_forward_rounded,
+      label: 'Next step',
+      size: 96,
+      color: ES.coral,
+      onTap: () => Navigator.of(context).pop(true),
+    ),
+  );
+}
+
+/// Play time left in a timed lesson step (Sound Spark, Pitch Slide): a calm
+/// bar that fills, never a countdown.
+class LessonTimeBar extends StatelessWidget {
+  const LessonTimeBar({super.key, required this.fraction});
+  final double fraction;
+
+  @override
+  Widget build(BuildContext context) => ClipRRect(
+    borderRadius: BorderRadius.circular(8),
+    child: SizedBox(
+      key: const ValueKey('lesson-time'),
+      width: 160,
+      height: 12,
+      child: Stack(
+        children: [
+          Container(color: ES.canvasDeep),
+          FractionallySizedBox(
+            widthFactor: fraction.clamp(0.0, 1.0),
+            child: Container(color: ES.sunshine),
+          ),
+        ],
+      ),
+    ),
+  );
+}

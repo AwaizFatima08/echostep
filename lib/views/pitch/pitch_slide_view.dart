@@ -8,6 +8,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../core/audio/audio_input.dart' show smoothTo;
+import '../../core/audio/sound_player.dart';
 import '../../core/audio/voice_analyzer.dart';
 import '../../core/content.dart';
 import '../../core/theme.dart';
@@ -17,7 +18,10 @@ import '../../widgets/kid_widgets.dart';
 import '../../widgets/listening.dart';
 
 class PitchSlideView extends StatefulWidget {
-  const PitchSlideView({super.key});
+  const PitchSlideView({super.key, this.lessonSeconds});
+
+  /// My Steps lesson step: play for this long, then "next step".
+  final int? lessonSeconds;
 
   @override
   State<PitchSlideView> createState() => _PitchSlideViewState();
@@ -79,6 +83,9 @@ class _PitchSlideViewState extends ListeningState<PitchSlideView> {
   @override
   String get mode => 'pitch';
 
+  double _lessonT = 0;
+  bool _lessonDone = false;
+
   @override
   void onStarted() {
     if (_welcomed) return;
@@ -101,6 +108,16 @@ class _PitchSlideViewState extends ListeningState<PitchSlideView> {
       _field.emit(_pip, latest.level * 0.6, latest.pitchNorm, dt, calm: child.settings.calmMode);
     }
     _field.step(dt);
+    final limit = widget.lessonSeconds;
+    if (limit != null && !_lessonDone) {
+      _lessonT += dt;
+      if (_lessonT >= limit) {
+        _lessonDone = true;
+        services.sound.sfx(Sfx.bloom);
+        _field.burst(_pip, count: 18, calm: child.settings.calmMode);
+        services.speech.prompt('Lovely singing!');
+      }
+    }
     setState(() {});
   }
 
@@ -124,7 +141,9 @@ class _PitchSlideViewState extends ListeningState<PitchSlideView> {
               return Stack(
                 children: [
                   Positioned.fill(
-                    child: CustomPaint(painter: _SkyPainter(tr, top: top, bottom: bottom, pipX: pipX)),
+                    child: CustomPaint(
+                      painter: _SkyPainter(tr, top: top, bottom: bottom, pipX: pipX),
+                    ),
                   ),
                   Positioned.fill(
                     child: IgnorePointer(child: CustomPaint(painter: ParticlePainter(_field))),
@@ -149,7 +168,13 @@ class _PitchSlideViewState extends ListeningState<PitchSlideView> {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          _voicedFrames == 0 ? 'Make a sound to fly!' : (tr.height > 0.65 ? 'High!' : tr.height < 0.35 ? 'Low!' : 'Flying...'),
+                          _voicedFrames == 0
+                              ? 'Make a sound to fly!'
+                              : (tr.height > 0.65
+                                    ? 'High!'
+                                    : tr.height < 0.35
+                                    ? 'Low!'
+                                    : 'Flying...'),
                           key: const ValueKey('pitch-cue'),
                           maxLines: 1,
                           style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: ES.sunshine),
@@ -157,6 +182,20 @@ class _PitchSlideViewState extends ListeningState<PitchSlideView> {
                       ),
                     ),
                   ),
+                  if (widget.lessonSeconds != null && !_lessonDone)
+                    Positioned(
+                      top: 34,
+                      left: 0,
+                      right: 0,
+                      child: Center(child: LessonTimeBar(fraction: _lessonT / widget.lessonSeconds!)),
+                    ),
+                  if (_lessonDone)
+                    Positioned.fill(
+                      child: ColoredBox(
+                        color: ES.canvasDeep.withValues(alpha: 0.55),
+                        child: const Center(child: LessonContinueButton()),
+                      ),
+                    ),
                   Positioned(top: 8, left: 8, child: const KidBackButton()),
                   Positioned(
                     left: 20,

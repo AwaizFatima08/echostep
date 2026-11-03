@@ -388,6 +388,7 @@ class CloudSync implements StoreObserver {
     'practised_sounds': c.practised,
     'mastered_sounds': c.mastered.toList(),
     'unlocked_cards': c.unlockedCards.toList(),
+    'lessons_done': c.lessonsDone,
     'settings': c.settings.toJson(),
   };
 

@@ -113,12 +113,17 @@ describe('shape checks', () => {
     const { nickname, ...noName } = child();
     await assertFails(setDoc(doc(db, 'users/alice/children/c1'), noName));
     await assertSucceeds(setDoc(doc(db, 'users/alice/children/c1'), child({ nickname: '' })));
+    await assertSucceeds(setDoc(doc(db, 'users/alice/children/c1'), child({ lessons_done: { c1l1: 2, c2l3: 1 } })));
+    await assertFails(setDoc(doc(db, 'users/alice/children/c1'), child({ lessons_done: 'all' })));
   });
 
   test('sessions must belong to the child they are filed under and be sane', async () => {
     const db = as('alice');
     await assertFails(setDoc(doc(db, 'users/alice/children/c1/sessions/s1'), session('c2')));
     await assertFails(setDoc(doc(db, 'users/alice/children/c1/sessions/s1'), session('c1', { mode: 'hack' })));
+    for (const mode of ['animals', 'turns', 'pitch', 'word']) {
+      await assertSucceeds(setDoc(doc(db, `users/alice/children/c1/sessions/m_${mode}`), session('c1', { mode })));
+    }
     await assertFails(setDoc(doc(db, 'users/alice/children/c1/sessions/s1'), session('c1', { duration_seconds: 999999 })));
     await assertFails(setDoc(doc(db, 'users/alice/children/c1/sessions/s1'), session('c1', { success_rate: 3 })));
     await assertFails(setDoc(doc(db, 'users/alice/children/c1/sessions/s1'), session('c1', { vocalization_count: -1 })));

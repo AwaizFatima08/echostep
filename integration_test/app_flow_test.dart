@@ -129,7 +129,11 @@ void main() {
     await tapIn(tester, find.byKey(const ValueKey('hub-cards')));
     await waitFor(tester, find.byKey(const ValueKey('card-more')));
     // "milk" (unlocked by "mmm") is further down the grid.
-    await tester.dragUntilVisible(find.byKey(const ValueKey('card-milk')), find.byType(GridView), const Offset(0, -300));
+    await tester.dragUntilVisible(
+      find.byKey(const ValueKey('card-milk')),
+      find.byType(GridView),
+      const Offset(0, -300),
+    );
     await tester.tap(find.byKey(const ValueKey('card-milk')));
     await run(tester, 6);
     await backUntil(tester, find.byKey(const ValueKey('parent-lock')));

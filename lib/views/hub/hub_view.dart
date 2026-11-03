@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-
 import '../../core/content.dart';
+import '../../core/lessons.dart';
 import '../../core/theme.dart';
 import '../../models/child.dart';
 import '../../services/services.dart';
@@ -17,6 +17,7 @@ import '../turns/echo_turns_view.dart';
 import '../cards/card_wall_view.dart';
 import '../parent/parent_zone_view.dart';
 import '../safari/safari_map_view.dart';
+import '../steps/path_view.dart';
 import '../spark/sound_spark_view.dart';
 
 /// Main hub (PDD Screen 2): three big cards and the grown-ups' lock.
@@ -166,7 +167,9 @@ class _HubViewState extends State<HubView> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 12),
+                _StepsBanner(child: c, onTap: () => _open(const PathView())),
+                const SizedBox(height: 12),
                 // Six activities in two columns; the grid scrolls on short phones.
                 Expanded(
                   child: LayoutBuilder(
@@ -334,6 +337,71 @@ class _CardFan extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// My Steps (v1.2): the guided path, above the free-play grid. Shows the
+/// next lesson so the routine is one tap away.
+class _StepsBanner extends StatelessWidget {
+  const _StepsBanner({required this.child, required this.onTap});
+  final ChildProfile child;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final next = nextLesson(child.lessonsDone);
+    final ch = chapterOf(next);
+    final finished = lessonsFinished(child.lessonsDone);
+    return BouncyButton(
+      label: 'My Steps: ${next.title}',
+      onTap: onTap,
+      child: Container(
+        key: const ValueKey('hub-steps'),
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(ES.radius + 4),
+          border: Border.all(color: ES.sunshine, width: 4),
+          boxShadow: [BoxShadow(color: ES.sunshine.withValues(alpha: 0.25), blurRadius: 18)],
+          gradient: LinearGradient(colors: [ch.color.withValues(alpha: 0.35), ES.card]),
+        ),
+        child: Row(
+          children: [
+            // Three stepping stones: how far through the path.
+            for (var i = 0; i < 3; i++)
+              Container(
+                width: 22,
+                height: 22,
+                margin: const EdgeInsets.only(right: 6),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: finished * 3 > i * allLessons.length ? ES.sunshine : ES.canvasDeep,
+                  border: Border.all(color: ES.sunshine, width: 2),
+                ),
+              ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'My Steps',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: ES.sunshine),
+                  ),
+                  Text(
+                    'Next: ${next.title}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 17),
+                  ),
+                ],
+              ),
+            ),
+            const Icon(Icons.play_circle_fill_rounded, size: 48, color: ES.sunshine),
+          ],
+        ),
       ),
     );
   }

@@ -227,7 +227,7 @@ SoundTarget? targetById(String id) {
 
 /// An AAC picture card.
 class AacCard {
-  const AacCard(this.id, this.word, this.emoji, {this.core = false});
+  const AacCard(this.id, this.word, this.emoji, {this.core = false, this.sound});
 
   /// Stable id; also the picture file name (`assets/aac/<id>.png`).
   final String id;
@@ -240,58 +240,66 @@ class AacCard {
   /// speech practice.
   final bool core;
 
+  /// Safari sound a First Words step practises for this word ("milk" is
+  /// practised as "mmm"). Words without one aren't used in lessons.
+  final String? sound;
+
   String get asset => 'assets/aac/$id.png';
+  SoundTarget? get target => sound == null ? null : targetById(sound!);
 }
 
 const aacCards = <AacCard>[
   // Core vocabulary, always available.
-  AacCard('more', 'more', '➕', core: true),
+  AacCard('more', 'more', '➕', core: true, sound: 'mmm'),
   AacCard('help', 'help', '🙋', core: true),
-  AacCard('all_done', 'all done', '👐', core: true),
+  AacCard('all_done', 'all done', '👐', core: true, sound: 'ah'),
   AacCard('yes', 'yes', '👍', core: true),
-  AacCard('no', 'no', '🙅', core: true),
-  AacCard('eat', 'eat', '🍽️', core: true),
-  AacCard('drink', 'drink', '🥤', core: true),
+  AacCard('no', 'no', '🙅', core: true, sound: 'na'),
+  AacCard('eat', 'eat', '🍽️', core: true, sound: 'ee'),
+  AacCard('drink', 'drink', '🥤', core: true, sound: 'ee'),
   AacCard('play', 'play', '🧸', core: true),
   AacCard('hug', 'hug', '🤗', core: true),
   // Unlocked through Echo Safari.
-  AacCard('car', 'car', '🚗'),
+  AacCard('car', 'car', '🚗', sound: 'ah'),
   AacCard('potty', 'potty', '🚽'),
-  AacCard('star', 'star', '⭐'),
-  AacCard('milk', 'milk', '🥛'),
-  AacCard('music', 'music', '🎵'),
-  AacCard('yummy', 'yummy', '😋'),
-  AacCard('shoe', 'shoe', '👟'),
-  AacCard('moon', 'moon', '🌙'),
-  AacCard('juice', 'juice', '🧃'),
-  AacCard('ball', 'ball', '⚽'),
-  AacCard('bubbles', 'bubbles', '🫧'),
-  AacCard('book', 'book', '📖'),
-  AacCard('banana', 'banana', '🍌'),
+  AacCard('star', 'star', '⭐', sound: 'ah'),
+  AacCard('milk', 'milk', '🥛', sound: 'mmm'),
+  AacCard('music', 'music', '🎵', sound: 'mmm'),
+  AacCard('yummy', 'yummy', '😋', sound: 'mmm'),
+  AacCard('shoe', 'shoe', '👟', sound: 'oo'),
+  AacCard('moon', 'moon', '🌙', sound: 'oo'),
+  AacCard('juice', 'juice', '🧃', sound: 'oo'),
+  AacCard('ball', 'ball', '⚽', sound: 'ba'),
+  AacCard('bubbles', 'bubbles', '🫧', sound: 'ba'),
+  AacCard('book', 'book', '📖', sound: 'ba'),
+  AacCard('banana', 'banana', '🍌', sound: 'ba'),
   AacCard('sleep', 'sleep', '😴'),
   AacCard('tree', 'tree', '🌳'),
-  AacCard('cheese', 'cheese', '🧀'),
-  AacCard('mama', 'mama', '👩'),
-  AacCard('mango', 'mango', '🥭'),
+  AacCard('cheese', 'cheese', '🧀', sound: 'ee'),
+  AacCard('mama', 'mama', '👩', sound: 'ma'),
+  AacCard('mango', 'mango', '🥭', sound: 'ma'),
   AacCard('monkey', 'monkey', '🐒'),
-  AacCard('open', 'open', '📦'),
-  AacCard('boat', 'boat', '⛵'),
-  AacCard('home', 'home', '🏠'),
-  AacCard('dada', 'dada', '👨'),
-  AacCard('dog', 'dog', '🐶'),
-  AacCard('duck', 'duck', '🦆'),
-  AacCard('papa', 'papa', '🧔'),
+  AacCard('open', 'open', '📦', sound: 'oh'),
+  AacCard('boat', 'boat', '⛵', sound: 'oh'),
+  AacCard('home', 'home', '🏠', sound: 'oh'),
+  AacCard('dada', 'dada', '👨', sound: 'da'),
+  AacCard('dog', 'dog', '🐶', sound: 'da'),
+  AacCard('duck', 'duck', '🦆', sound: 'da'),
+  AacCard('papa', 'papa', '🧔', sound: 'pa'),
   AacCard('pear', 'pear', '🍐'),
-  AacCard('popcorn', 'popcorn', '🍿'),
-  AacCard('water', 'water', '💧'),
-  AacCard('wave', 'wave', '🌊'),
-  AacCard('wow', 'wow', '😮'),
-  AacCard('nana', 'nana', '👵'),
-  AacCard('nose', 'nose', '👃'),
-  AacCard('nap', 'nap', '🛌'),
-  AacCard('bye', 'bye', '👋'),
+  AacCard('popcorn', 'popcorn', '🍿', sound: 'pa'),
+  AacCard('water', 'water', '💧', sound: 'wa'),
+  AacCard('wave', 'wave', '🌊', sound: 'wa'),
+  AacCard('wow', 'wow', '😮', sound: 'wa'),
+  AacCard('nana', 'nana', '👵', sound: 'na'),
+  AacCard('nose', 'nose', '👃', sound: 'na'),
+  AacCard('nap', 'nap', '🛌', sound: 'na'),
+  AacCard('bye', 'bye', '👋', sound: 'bye'),
   AacCard('bird', 'bird', '🐦'),
   AacCard('bed', 'bed', '🛏️'),
+  // v1.2: unlocked by My Steps lessons (Little Words).
+  AacCard('up', 'up', '⬆️', sound: 'ah'),
+  AacCard('uh_oh', 'uh-oh', '😯', sound: 'oh'),
 ];
 
 /// Animal Friends (v1.1): each animal's call is one of the Safari sounds, so

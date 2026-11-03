@@ -38,15 +38,24 @@ The site is the `website/` folder: upload its contents (including the hidden `.h
 ```
 EchoSteps turns any sound a child makes into something magical. It is made for young children who are not talking yet, talk only a little, or are learning at their own pace, including autistic children and children with speech delays.
 
-SOUND SPARK: Milo the bear is fast asleep. A hum, a whisper, a click or a big "aaah" wakes him up: he glows and blows bubbles. Quiet sounds make small yellow bubbles; louder sounds make big rainbow ones. There is nothing to get wrong.
+MY STEPS: a gentle learning path of 7 chapters and 21 short lessons, from "any sound counts" to first little words. Each lesson is three steps shown as a simple picture schedule (first, then, then), so your child always knows what comes next.
 
-ECHO SAFARI: Pip the bird shows a sound and its mouth shape: Ah, Mmm, Oo, Ba, Ee, Ma, Oh and Da. As your child copies it, a flower grows and blooms, and new picture cards unlock.
+SOUND SPARK: Milo the bear is fast asleep. A hum, a whisper or a big "aaah" wakes him up: he glows and blows bubbles. There is nothing to get wrong.
 
-MY CARDS: Tap a picture to hear the word: more, help, all done, yes, no, eat, drink, play, hug and more. Core words are always available. Communication is never locked or time-limited.
+ECHO SAFARI: Pip the bird shows 12 sounds and their mouth shapes: Ah, Mmm, Oo, Ba, Ee, Ma, Oh, Da, Pa, Wa, Na and Bye-bye. As your child copies, a flower grows and blooms, and picture cards unlock.
+
+FIRST WORDS: Pip shows a picture card, says the word slowly, and your child has a try: milk, more, mama, ball, up, uh-oh and many more.
+
+ANIMAL FRIENDS: moo with the cow, baa with the sheep and buzz with the bee. Every animal call is a speech sound in disguise.
+
+ECHO TURNS: my turn, your turn with Pip, the back-and-forth at the heart of early talking.
+
+PITCH SLIDE: sing high and low to fly Pip over the hills.
+
+MY CARDS: tap a picture to hear the word: more, help, all done, yes, no, eat, drink, play, hug and more. Core words are always available. Communication is never locked or time-limited.
 
 FOR GROWN-UPS (behind a question for adults)
-• Vocal Growth Tree: roots for every sound, branches for every day of practice, flowers for every sound practised.
-• A weekly chart of play time and voice time.
+• Vocal Growth Tree, weekly chart and lesson progress.
 • Mark a sound as mastered when you or your therapist hear it reliably.
 • A one-tap PDF report to share with a speech therapist.
 • Explore or Practise level, microphone sensitivity, calm mode, daily time limit, speaking speed.
@@ -123,4 +132,17 @@ EchoSteps is an educational practice app. It is not a medical device and does no
 New: Animal Friends (echo the cow, owl, sheep, monkey, bee and cat), Echo Turns
 (my turn, your turn with Pip) and Pitch Slide (sing high and low to fly Pip).
 Four more Echo Safari sounds (pa, wa, na, bye-bye) and 12 more picture cards.
+```
+
+## Release notes
+
+v1.2.0 (versionCode 3):
+```
+<en-US>
+New: My Steps! A gentle learning path of 7 chapters and 21 short lessons, from "any sound counts" to first little words.
+• Each lesson is three steps on a simple first-then picture schedule.
+• First Words: Pip shows a picture card and your child has a try. New cards: up and uh-oh.
+• Lesson progress in the Parent Zone and the therapist report.
+• Fix: cloud backup now saves Animal Friends, Echo Turns and Pitch Slide sessions.
+</en-US>
 ```

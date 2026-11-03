@@ -15,7 +15,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// Builds the real app with a synthetic voice, no audio output and no
 /// Firebase.
-Future<Store> pumpApp(WidgetTester tester, Directory dir, {void Function(Store)? seed}) async {
+Future<Store> pumpApp(WidgetTester tester, Directory dir, {void Function(Store)? seed, Widget? home}) async {
   final store = (await tester.runAsync(() => Store.open(dir)))!;
   seed?.call(store);
   final speech = Speech(enabled: false);
@@ -31,6 +31,7 @@ Future<Store> pumpApp(WidgetTester tester, Directory dir, {void Function(Store)?
       ),
       session: SessionTracker(store),
       cloud: CloudSync(store: store),
+      home: home,
     ),
   );
   return store;

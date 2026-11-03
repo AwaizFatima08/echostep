@@ -80,8 +80,11 @@ class StopScorer {
 /// One Echo Safari stop (PDD Screen 4): Pip models the sound and its mouth
 /// shape, the child imitates, the flower grows, blooms and unlocks cards.
 class SafariStopView extends StatefulWidget {
-  const SafariStopView({super.key, required this.target});
+  const SafariStopView({super.key, required this.target, this.lesson = false});
   final SoundTarget target;
+
+  /// Part of a My Steps lesson: the reward offers only "next step".
+  final bool lesson;
 
   @override
   State<SafariStopView> createState() => _SafariStopViewState();
@@ -364,26 +367,29 @@ class _SafariStopViewState extends ListeningState<SafariStopView> {
                 ),
               ],
               const SizedBox(height: 28),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  RoundButton(
-                    key: const ValueKey('stop-again'),
-                    icon: Icons.replay_rounded,
-                    label: 'Again',
-                    color: ES.turquoise,
-                    onTap: _again,
-                  ),
-                  const SizedBox(width: 28),
-                  RoundButton(
-                    key: const ValueKey('stop-next'),
-                    icon: Icons.arrow_forward_rounded,
-                    label: 'Next sound',
-                    color: ES.coral,
-                    onTap: _next,
-                  ),
-                ],
-              ),
+              if (widget.lesson)
+                const LessonContinueButton()
+              else
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RoundButton(
+                      key: const ValueKey('stop-again'),
+                      icon: Icons.replay_rounded,
+                      label: 'Again',
+                      color: ES.turquoise,
+                      onTap: _again,
+                    ),
+                    const SizedBox(width: 28),
+                    RoundButton(
+                      key: const ValueKey('stop-next'),
+                      icon: Icons.arrow_forward_rounded,
+                      label: 'Next sound',
+                      color: ES.coral,
+                      onTap: _next,
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

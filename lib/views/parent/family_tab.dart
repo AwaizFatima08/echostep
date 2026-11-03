@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme.dart';
+import '../../core/version.dart';
 import '../../models/child.dart';
 import '../../services/cloud_sync.dart';
 import '../../services/services.dart';
@@ -368,7 +369,7 @@ class _FamilyTabState extends State<FamilyTab> {
                     onPressed: () => showLicensePage(
                       context: context,
                       applicationName: 'EchoSteps',
-                      applicationVersion: '1.0.0',
+                      applicationVersion: appVersion,
                       applicationLegalese: 'Pictures: Noto Color Emoji (Google, Apache 2.0). Font: Andika (SIL, OFL).',
                     ),
                     child: const Text('Licences'),
@@ -392,7 +393,7 @@ class _FamilyTabState extends State<FamilyTab> {
         const SizedBox(height: 16),
         const Center(
           child: Hint(
-            'EchoSteps 1.0.0 · An educational practice app, not a medical device or a substitute for therapy.',
+            'EchoSteps $appVersion · An educational practice app, not a medical device or a substitute for therapy.',
             size: 12,
           ),
         ),

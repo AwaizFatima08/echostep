@@ -20,10 +20,13 @@ import '../../widgets/listening.dart';
 import '../safari/safari_stop_view.dart' show StopScorer;
 
 class EchoTurnsView extends StatefulWidget {
-  const EchoTurnsView({super.key, this.target});
+  const EchoTurnsView({super.key, this.target, this.lesson = false});
 
   /// Sound to practise; defaults to the child's suggested Safari sound.
   final SoundTarget? target;
+
+  /// Part of a My Steps lesson: one round, then "next step".
+  final bool lesson;
 
   @override
   State<EchoTurnsView> createState() => _EchoTurnsViewState();
@@ -242,7 +245,12 @@ class _EchoTurnsViewState extends ListeningState<EchoTurnsView> {
                                     border: Border.all(color: ES.sunshine.withValues(alpha: 0.8), width: 5),
                                   ),
                                 ),
-                              Milo(size: charSize, awake: 1, mouth: yourTurn ? _level : 0, glow: yourTurn ? _scorer.match * 0.6 : 0),
+                              Milo(
+                                size: charSize,
+                                awake: 1,
+                                mouth: yourTurn ? _level : 0,
+                                glow: yourTurn ? _scorer.match * 0.6 : 0,
+                              ),
                             ],
                           ),
                           const SizedBox(height: 4),
@@ -316,26 +324,29 @@ class _EchoTurnsViewState extends ListeningState<EchoTurnsView> {
                 style: TextStyle(fontSize: 34, fontWeight: FontWeight.w700, color: ES.sunshine),
               ),
               const SizedBox(height: 28),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  RoundButton(
-                    key: const ValueKey('turns-again'),
-                    icon: Icons.replay_rounded,
-                    label: 'Again',
-                    color: ES.turquoise,
-                    onTap: _again,
-                  ),
-                  const SizedBox(width: 28),
-                  RoundButton(
-                    key: const ValueKey('turns-home'),
-                    icon: Icons.home_rounded,
-                    label: 'Home',
-                    color: ES.coral,
-                    onTap: () => Navigator.of(context).maybePop(),
-                  ),
-                ],
-              ),
+              if (widget.lesson)
+                const LessonContinueButton()
+              else
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    RoundButton(
+                      key: const ValueKey('turns-again'),
+                      icon: Icons.replay_rounded,
+                      label: 'Again',
+                      color: ES.turquoise,
+                      onTap: _again,
+                    ),
+                    const SizedBox(width: 28),
+                    RoundButton(
+                      key: const ValueKey('turns-home'),
+                      icon: Icons.home_rounded,
+                      label: 'Home',
+                      color: ES.coral,
+                      onTap: () => Navigator.of(context).maybePop(),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

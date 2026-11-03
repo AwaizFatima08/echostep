@@ -36,7 +36,7 @@ service cloud.firestore {
         function validChild(d) {
           return d.keys().hasOnly(['nickname', 'age_group', 'avatar_id', 'created_at', 'updated_at',
                                    'stats', 'practised_sounds', 'mastered_sounds', 'unlocked_cards',
-                                   'settings', 'calibration'])
+                                   'settings', 'calibration', 'lessons_done'])
             && d.keys().hasAll(['nickname', 'age_group', 'avatar_id'])
             && isStr(d.nickname, 24)
             && d.age_group in ['2-3', '4-5', '6+']
@@ -46,7 +46,8 @@ service cloud.firestore {
             && (!('mastered_sounds' in d) || (d.mastered_sounds is list && d.mastered_sounds.size() <= 32))
             && (!('unlocked_cards' in d) || (d.unlocked_cards is list && d.unlocked_cards.size() <= 200))
             && (!('settings' in d) || (d.settings is map && d.settings.size() <= 24))
-            && (!('calibration' in d) || (d.calibration is map && d.calibration.size() <= 8));
+            && (!('calibration' in d) || (d.calibration is map && d.calibration.size() <= 8))
+            && (!('lessons_done' in d) || (d.lessons_done is map && d.lessons_done.size() <= 64));
         }
 
         match /sessions/{sessionId} {
@@ -65,7 +66,9 @@ service cloud.firestore {
               && isCount(d.vocalization_count)
               && isNum(d.voice_seconds)
               && isNum(d.avg_volume_db)
-              && d.mode in ['spark', 'safari', 'cards']
+              // Every activity that records a session (v1.1 added animals, turns
+              // and pitch; v1.2 adds word for My Steps First Words steps).
+              && d.mode in ['spark', 'safari', 'cards', 'animals', 'turns', 'pitch', 'word']
               && (d.target_sound == null || isStr(d.target_sound, 16))
               && isCount(d.attempts)
               && isCount(d.completions)
