@@ -1,6 +1,5 @@
-// Slow suite (~30 min): every My Steps lesson played start to finish with the
-// synthetic voice, one test per chapter. Run before a release:
-//   flutter test test_slow/
+// Every My Steps lesson played start to finish with the synthetic voice,
+// one test per chapter (about a minute in all).
 import 'dart:io';
 
 import 'package:echosteps/core/lessons.dart';
@@ -9,7 +8,7 @@ import 'package:echosteps/views/steps/lesson_view.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../test/app_flow_test.dart' show pumpApp, tapIn;
+import 'app_flow_test.dart' show pumpApp, tapIn;
 
 /// Like `run` in the host tests, with 100 ms frames to halve the cost.
 Future<void> run(WidgetTester tester, double seconds) async {
@@ -22,6 +21,12 @@ void main() {
   for (final ch in chapters) {
     testWidgets('chapter ${ch.id}: every lesson can be finished', (tester) async {
       final dir = Directory.systemTemp.createTempSync('es_all_${ch.id}');
+      // Teardown runs on the real clock (a delay inside the test body would
+      // wait on the fake one forever).
+      addTearDown(() async {
+        await Future<void>.delayed(const Duration(milliseconds: 300));
+        dir.deleteSync(recursive: true);
+      });
       for (final l in ch.lessons) {
         final store = await pumpApp(
           tester,
@@ -44,8 +49,6 @@ void main() {
         expect(find.byKey(const ValueKey('lesson-done')), findsOneWidget, reason: l.id);
         expect(store.active!.lessonsDone[l.id], 1, reason: l.id);
       }
-      await Future<void>.delayed(const Duration(milliseconds: 300));
-      dir.deleteSync(recursive: true);
-    }, timeout: const Timeout(Duration(minutes: 20)));
+    }, timeout: const Timeout(Duration(minutes: 5)));
   }
 }

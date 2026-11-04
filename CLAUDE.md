@@ -30,7 +30,7 @@ v1.0.0 and v1.1.0 are live on Google Play (developer name HomiLabs; listing "Ech
 - `website/`: landing page, privacy policy (with the account-deletion section, `#delete-account`) and terms. Hosted at https://echosteps.homilabs.org (Hostinger: upload manually, incl. `.htaccess`) and mirrored by Firebase Hosting at https://echosteps-homilabs.web.app (the app's in-app link). Update both after edits. Contact: homilabs.smc@gmail.com.
 
 ## Commands
-- Tests: `flutter test` (host, 97); `flutter test test_slow/` (~30 min: all 21 lessons played through; run before a release). Rules: `cd firebase/rules-test && npm install && JAVA_HOME=~/jdks/jdk-21.0.12.1+1 firebase emulators:exec --only firestore "npm test" --project demo-echosteps`.
+- Tests: `flutter test` (host, 104, incl. all 21 lessons played through). Rules: `cd firebase/rules-test && npm install && JAVA_HOME=~/jdks/jdk-21.0.12.1+1 firebase emulators:exec --only firestore "npm test" --project demo-echosteps`.
 - On-device: see `docs/testing.md` (build the test APK first, then `flutter drive --use-application-binary`).
 - Emulator/demo without a mic: `--dart-define=ES_SYNTH_VOICE=true`.
 - Graphics: `flutter test tool/make_graphics_test.dart` (icons, Play icon, feature graphic). Pictures: `python3 scripts/fetch_aac_pictures.py`. SFX: `python3 scripts/make_sfx.py`.
